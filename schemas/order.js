@@ -1,54 +1,56 @@
 // schemas/order.js
-export default {
+
+import { defineField, defineType } from 'sanity'
+
+export default defineType({
   name: 'order',
-  title: 'Order',
+  title: 'Замовлення',
   type: 'document',
   fields: [
-    {
-      name: 'customerName',
-      title: 'Customer Name',
-      type: 'string',
-      validation: Rule => Rule.required(),
-    },
-    {
-      name: 'customerEmail',
-      title: 'Customer Email',
-      type: 'string',
-    },
-    {
+    defineField({ name: 'name', title: "Ім'я замовника", type: 'string' }),
+    defineField({ name: 'email', title: 'Email', type: 'string' }),
+    defineField({ name: 'phone', title: 'Телефон', type: 'string' }),
+    defineField({
       name: 'items',
-      title: 'Items',
+      title: 'Замовлені позиції',
       type: 'array',
       of: [
         {
           type: 'object',
           fields: [
-            { name: 'product', title: 'Product', type: 'reference', to: [{ type: 'product' }] },
-            { name: 'quantity', title: 'Quantity', type: 'number', validation: Rule => Rule.min(1) },
-          ],
-        },
-      ],
-    },
-    {
+            { name: 'product', title: 'Продукт', type: 'reference', to: [{ type: 'product' }] },
+            { name: 'variant', title: "Об'єм", type: 'string' },
+            { name: 'quantity', title: 'Кількість', type: 'number' },
+          ]
+        }
+      ]
+    }),
+    defineField({
       name: 'status',
-      title: 'Status',
+      title: 'Статус',
       type: 'string',
       options: {
         list: [
-          { title: 'New', value: 'new' },
-          { title: 'Processed', value: 'processed' },
-          { title: 'Cancelled', value: 'cancelled' },
-        ],
-        layout: 'dropdown',
+          { title: 'Нове', value: 'new' },
+          { title: 'Опрацьовано', value: 'processed' },
+          { title: 'Скасовано', value: 'cancelled' }
+        ]
       },
-      initialValue: 'new',
-    },
-    {
-      name: 'createdAt',
-      title: 'Created At',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString(),
-      readOnly: true,
-    },
+      initialValue: 'new'
+    }),
+    defineField({ name: 'createdAt', title: 'Створено', type: 'datetime', readOnly: true })
   ],
-};
+  preview: {
+    select: {
+      title: 'name',
+      subtitle: 'email',
+      itemCount: 'items.length'
+    },
+    prepare({ title, subtitle, itemCount }) {
+      return {
+        title: title || 'Без імені',
+        subtitle: `${subtitle || '—'} • Позицій: ${itemCount ?? 0}`
+      }
+    }
+  }
+})
