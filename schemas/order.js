@@ -7,9 +7,35 @@ export default defineType({
   title: 'Замовлення',
   type: 'document',
   fields: [
-    defineField({ name: 'name', title: "Ім'я замовника", type: 'string' }),
+    defineField({ name: 'name', title: "Ім'я", type: 'string' }),
+    defineField({ name: 'middleName', title: "По-батькові", type: 'string' }),
+    defineField({ name: 'surname', title: "Прізвище", type: 'string' }),
     defineField({ name: 'email', title: 'Email', type: 'string' }),
     defineField({ name: 'phone', title: 'Телефон', type: 'string' }),
+
+    defineField({
+      name: 'delivery',
+      title: 'Доставка',
+      type: 'object',
+      fields: [
+        { name: 'region', title: 'Область', type: 'string' },
+        { name: 'city', title: 'Місто', type: 'string' },
+        { name: 'warehouse', title: 'Відділення Нової Пошти', type: 'string' },
+      ]
+    }),
+
+    defineField({
+      name: 'paymentMethod',
+      title: 'Спосіб оплати',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Накладений платіж', value: 'cod' },
+          { title: 'Передплата', value: 'prepaid' },
+        ]
+      }
+    }),
+
     defineField({
       name: 'items',
       title: 'Замовлені позиції',
@@ -25,6 +51,7 @@ export default defineType({
         }
       ]
     }),
+
     defineField({
       name: 'status',
       title: 'Статус',
@@ -38,8 +65,15 @@ export default defineType({
       },
       initialValue: 'new'
     }),
-    defineField({ name: 'createdAt', title: 'Створено', type: 'datetime', readOnly: true })
+
+    defineField({
+      name: 'createdAt',
+      title: 'Створено',
+      type: 'datetime',
+      readOnly: true
+    })
   ],
+
   preview: {
     select: {
       title: 'name',
