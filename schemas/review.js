@@ -20,7 +20,7 @@ export default {
       name: 'rating',
       type: 'number',
       title: 'Оцінка',
-      validation: Rule => Rule.min(1).max(5),
+      validation: Rule => Rule.min(1).max(5).warning('Оцінка має бути від 1 до 5, якщо вказана'),
     },
     {
       name: 'comment',
